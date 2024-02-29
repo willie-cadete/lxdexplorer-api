@@ -12,6 +12,7 @@ type Config struct {
 	LXD       LXD
 	HostNodes []string
 	Server    API
+	MongoDB   MongoDB
 }
 
 type API struct {

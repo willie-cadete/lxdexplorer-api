@@ -3,6 +3,7 @@ package fetcher
 import (
 	"log"
 	"lxdexplorer-api/config"
+	"lxdexplorer-api/database"
 	"os"
 	"time"
 
@@ -49,7 +50,13 @@ func Run() {
 		if c == nil {
 			continue
 		}
-		log.Println(c.GetContainerNames())
+		cs, _ := c.GetContainersFull()
+
+		for _, c := range cs {
+			database.InsertOne("containers", c)
+		}
+
+		log.Println("Inserted", len(cs), "containers from", h)
 	}
 
 	time.Sleep(time.Duration(conf.Interval) * time.Second)
