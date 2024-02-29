@@ -1,0 +1,11 @@
+Interval: 60
+LogLevel: info
+LXD:
+  TLSCertificate: ./keys/client.crt
+  TLSkey: ./keys/client.key
+  CertificateVerify: false
+Server:
+  Bind: 127.0.0.1
+  Port: 80
+HostNodes:
+  - 127.0.0.1
