@@ -12,6 +12,21 @@ import (
 
 var conf, _ = config.LoadConfig()
 
+type HostNode struct {
+	Timestamp  time.Time   `bson:"timestamp"`
+	Hostname   string      `bson:"hostname"`
+	Containers interface{} `bson:"containers"`
+}
+
+type Container struct {
+	Timestap  time.Time   `bson:"timestamp"`
+	Name      string      `bson:"name"`
+	Container interface{} `bson:"container"`
+	Backups   interface{} `bson:"backups"`
+	State     interface{} `bson:"state"`
+	Snapshots interface{} `bson:"snapshots"`
+}
+
 func connectionOptions() *lxd.ConnectionArgs {
 	c := conf
 
@@ -52,11 +67,18 @@ func Run() {
 		}
 		cs, _ := c.GetContainersFull()
 
+		// for _, c := range cs {
+		// 	database.InsertOne("containers", c)
+		// }
+		// log.Println("Inserted", len(cs), "containers from", h)
 		for _, c := range cs {
-			database.InsertOne("containers", c)
+			database.InsertMany("containers", []interface{}{Container{Timestap: time.Now().UTC(), Name: c.Name, Container: c.Container, Backups: c.Backups, State: c.State, Snapshots: c.Snapshots}})
 		}
-
 		log.Println("Inserted", len(cs), "containers from", h)
+
+		database.InsertMany("hostnodes", []interface{}{HostNode{Timestamp: time.Now().UTC(), Hostname: h, Containers: cs}})
+		log.Println("Inserted", len(cs), "containers from hostnode:", h)
+
 	}
 
 	time.Sleep(time.Duration(conf.Interval) * time.Second)
