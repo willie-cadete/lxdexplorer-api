@@ -1,6 +1,6 @@
 module lxdexplorer-api
 
-go 1.22.0
+go 1.22
 
 require (
 	github.com/canonical/lxd v0.0.0-20240223144816-268803736e57 // indirect
