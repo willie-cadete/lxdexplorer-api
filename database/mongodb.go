@@ -6,6 +6,7 @@ import (
 
 	"log"
 
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -52,4 +53,33 @@ func InsertMany(collection string, documents []interface{}) {
 	}
 	log.Printf("Inserted %v documents with IDs %v\n", len(i.InsertedIDs), i.InsertedIDs)
 
+}
+
+func FindOne(collection string, filter interface{}) *mongo.SingleResult {
+	c := connect()
+	defer c.Disconnect(context.Background())
+
+	return c.Database("lxd").Collection(collection).FindOne(context.Background(), filter)
+}
+
+func ReplaceOne(collection string, filter interface{}, replacement interface{}) (*mongo.UpdateResult, error) {
+	c := connect()
+	defer c.Disconnect(context.Background())
+
+	return c.Database("lxd").Collection(collection).ReplaceOne(context.Background(), filter, replacement)
+}
+
+func AddTTL(collection string, field string, seconds int32) {
+	c := connect()
+	defer c.Disconnect(context.Background())
+
+	indexModel := mongo.IndexModel{
+		Keys:    bson.D{{field, 1}},
+		Options: options.Index().SetExpireAfterSeconds(seconds),
+	}
+
+	_, err := c.Database("lxd").Collection(collection).Indexes().CreateOne(context.Background(), indexModel)
+	if err != nil {
+		panic(err)
+	}
 }

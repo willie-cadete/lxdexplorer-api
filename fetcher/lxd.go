@@ -81,5 +81,8 @@ func Run() {
 
 	}
 
+	database.AddTTL("containers", "timestamp", 30)
+	database.AddTTL("hostnodes", "timestamp", 30)
+
 	time.Sleep(time.Duration(conf.Interval) * time.Second)
 }
