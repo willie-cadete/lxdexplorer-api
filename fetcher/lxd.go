@@ -35,7 +35,7 @@ type Container struct {
 	Name        string    `bson:"name"`
 	Hostnode    string    `bson:"hostnode"`
 	Status      string    `bson:"status"`
-	Networking  Network   `bson:"networking"`
+	Network     Network   `bson:"network"`
 	OS          OS        `bson:"os"`
 	ImageID     string    `bson:"imageid"`
 }
@@ -79,7 +79,7 @@ func ParseContainer(c api.ContainerFull, h string) Container {
 			Name:     c.Name,
 			Hostnode: h,
 			Status:   c.State.Status,
-			Networking: Network{
+			Network: Network{
 				IPs:     "N/A",
 				Netmask: "N/A",
 				CIDR:    "N/A",
@@ -96,7 +96,7 @@ func ParseContainer(c api.ContainerFull, h string) Container {
 		Name:     c.Name,
 		Hostnode: h,
 		Status:   c.State.Status,
-		Networking: Network{
+		Network: Network{
 			IPs:     c.State.Network["eth0"].Addresses[0].Address,
 			Netmask: c.State.Network["eth0"].Addresses[0].Netmask,
 			CIDR:    c.State.Network["eth0"].Addresses[0].Address + "/" + c.State.Network["eth0"].Addresses[0].Netmask,
@@ -130,7 +130,7 @@ func Run() {
 
 		for _, c := range cs {
 			container := ParseContainer(c, h)
-			database.InsertMany("containers", []interface{}{Container{CollectedAt: collectedAt, Name: container.Name, Hostnode: container.Hostnode, Status: container.Status, Networking: container.Networking, OS: container.OS, ImageID: container.ImageID}})
+			database.InsertMany("containers", []interface{}{Container{CollectedAt: collectedAt, Name: container.Name, Hostnode: container.Hostnode, Status: container.Status, Network: container.Network, OS: container.OS, ImageID: container.ImageID}})
 		}
 		log.Println("Inserted", len(cs), "containers from", h)
 
