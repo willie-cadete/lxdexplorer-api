@@ -117,7 +117,7 @@ func AddLXDTTLs() {
 	database.AddTTL("history", "collectedat", int32(conf.Retention*60*60*24))
 }
 
-func Run() {
+func collect() {
 
 	collectedAt := time.Now().UTC()
 
@@ -140,4 +140,11 @@ func Run() {
 	}
 
 	time.Sleep(time.Duration(conf.Interval) * time.Second)
+}
+
+func StartFetcher() {
+	AddLXDTTLs()
+	for {
+		collect()
+	}
 }

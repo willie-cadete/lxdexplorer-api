@@ -1,14 +1,13 @@
 package main
 
-import "lxdexplorer-api/fetcher"
+import (
+	"lxdexplorer-api/api"
+	"lxdexplorer-api/fetcher"
+)
 
 func main() {
 
-	// Prepare TTL Indexes
-	fetcher.AddLXDTTLs()
-
-	for {
-		fetcher.Run()
-	}
+	// Create a new fetcher
+	go fetcher.StartFetcher()
 
 }
