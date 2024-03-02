@@ -8,6 +8,7 @@ import (
 
 type Config struct {
 	Interval  int
+	Retention int32
 	LogLevel  string
 	LXD       LXD
 	HostNodes []string

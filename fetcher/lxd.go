@@ -13,18 +13,18 @@ import (
 var conf, _ = config.LoadConfig()
 
 type HostNode struct {
-	Timestamp  time.Time   `bson:"timestamp"`
-	Hostname   string      `bson:"hostname"`
-	Containers interface{} `bson:"containers"`
+	CollectedAt time.Time   `bson:"collectedat"`
+	Hostname    string      `bson:"hostname"`
+	Containers  interface{} `bson:"containers"`
 }
 
 type Container struct {
-	Timestap  time.Time   `bson:"timestamp"`
-	Name      string      `bson:"name"`
-	Container interface{} `bson:"container"`
-	Backups   interface{} `bson:"backups"`
-	State     interface{} `bson:"state"`
-	Snapshots interface{} `bson:"snapshots"`
+	CollectedAt time.Time   `bson:"collectedat"`
+	Name        string      `bson:"name"`
+	Container   interface{} `bson:"container"`
+	Backups     interface{} `bson:"backups"`
+	State       interface{} `bson:"state"`
+	Snapshots   interface{} `bson:"snapshots"`
 }
 
 func connectionOptions() *lxd.ConnectionArgs {
@@ -60,6 +60,9 @@ func getHostnodes() []string {
 }
 
 func Run() {
+
+	collectedAt := time.Now().UTC()
+
 	for _, h := range getHostnodes() {
 		c := Connect(h)
 		if c == nil {
@@ -72,17 +75,17 @@ func Run() {
 		// }
 		// log.Println("Inserted", len(cs), "containers from", h)
 		for _, c := range cs {
-			database.InsertMany("containers", []interface{}{Container{Timestap: time.Now().UTC(), Name: c.Name, Container: c.Container, Backups: c.Backups, State: c.State, Snapshots: c.Snapshots}})
+			database.InsertMany("containers", []interface{}{Container{CollectedAt: collectedAt, Name: c.Name, Container: c.Container, Backups: c.Backups, State: c.State, Snapshots: c.Snapshots}})
 		}
 		log.Println("Inserted", len(cs), "containers from", h)
 
-		database.InsertMany("hostnodes", []interface{}{HostNode{Timestamp: time.Now().UTC(), Hostname: h, Containers: cs}})
+		database.InsertMany("hostnodes", []interface{}{HostNode{CollectedAt: collectedAt, Hostname: h, Containers: cs}})
 		log.Println("Inserted", len(cs), "containers from hostnode:", h)
 
 	}
 
-	database.AddTTL("containers", "timestamp", 30)
-	database.AddTTL("hostnodes", "timestamp", 30)
+	database.AddTTL("containers", "collectedat", int32(conf.Interval*2))
+	database.AddTTL("hostnodes", "collectedat", conf.Retention*24*60)
 
 	time.Sleep(time.Duration(conf.Interval) * time.Second)
 }
