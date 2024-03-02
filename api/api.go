@@ -5,11 +5,14 @@ import (
 
 	"lxdexplorer-api/config"
 	"lxdexplorer-api/database"
+
+	"github.com/gin-contrib/cors"
 )
 
 // StartAPI starts the API server
 func StartAPI() {
 	r := gin.Default()
+	r.Use(cors.Default())
 
 	// Load the configuration
 	conf, _ := config.LoadConfig()
