@@ -18,7 +18,7 @@ type Config struct {
 
 type API struct {
 	Bind string
-	Port int
+	Port string
 }
 
 type LXD struct {

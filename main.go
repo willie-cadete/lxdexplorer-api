@@ -10,4 +10,6 @@ func main() {
 	// Create a new fetcher
 	go fetcher.StartFetcher()
 
+	// Add API routes
+	api.StartAPI()
 }
