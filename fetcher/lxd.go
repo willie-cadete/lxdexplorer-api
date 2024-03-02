@@ -109,6 +109,14 @@ func ParseContainer(c api.ContainerFull, h string) Container {
 	}
 }
 
+func AddLXDTTLs() {
+	database.AddTTL("containers", "collectedat", int32(conf.Interval))
+	log.Printf("Added TTL to containers collection: %d seconds", conf.Interval)
+
+	log.Printf("Added TTL to hostnodes collection: %d days", conf.Retention)
+	database.AddTTL("hostnodes", "collectedat", int32(conf.Retention*60*60*24))
+}
+
 func Run() {
 
 	collectedAt := time.Now().UTC()
@@ -122,7 +130,7 @@ func Run() {
 
 		for _, c := range cs {
 			container := ParseContainer(c, h)
-			database.InsertMany("containers", []interface{}{container})
+			database.InsertMany("containers", []interface{}{Container{CollectedAt: collectedAt, Name: container.Name, Hostnode: container.Hostnode, Status: container.Status, Networking: container.Networking, OS: container.OS, ImageID: container.ImageID}})
 		}
 		log.Println("Inserted", len(cs), "containers from", h)
 
@@ -130,9 +138,6 @@ func Run() {
 		log.Println("Inserted", len(cs), "containers from hostnode:", h)
 
 	}
-
-	database.AddTTL("containers", "collectedat", int32(conf.Interval*2))
-	database.AddTTL("hostnodes", "collectedat", conf.Retention*24*60)
 
 	time.Sleep(time.Duration(conf.Interval) * time.Second)
 }
