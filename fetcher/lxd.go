@@ -113,8 +113,8 @@ func AddLXDTTLs() {
 	database.AddTTL("containers", "collectedat", int32(conf.Interval))
 	log.Printf("Added TTL to containers collection: %d seconds", conf.Interval)
 
-	log.Printf("Added TTL to hostnodes collection: %d days", conf.Retention)
-	database.AddTTL("hostnodes", "collectedat", int32(conf.Retention*60*60*24))
+	log.Printf("Added TTL to history collection: %d days", conf.Retention)
+	database.AddTTL("history", "collectedat", int32(conf.Retention*60*60*24))
 }
 
 func Run() {
@@ -134,7 +134,7 @@ func Run() {
 		}
 		log.Println("Inserted", len(cs), "containers from", h)
 
-		database.InsertMany("hostnodes", []interface{}{HostNode{CollectedAt: collectedAt, Hostname: h, Containers: cs}})
+		database.InsertMany("history", []interface{}{HostNode{CollectedAt: collectedAt, Hostname: h, Containers: cs}})
 		log.Println("Inserted", len(cs), "containers from hostnode:", h)
 
 	}
