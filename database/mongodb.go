@@ -7,6 +7,7 @@ import (
 	"log"
 
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -60,6 +61,32 @@ func FindOne(collection string, filter interface{}) *mongo.SingleResult {
 	defer c.Disconnect(context.Background())
 
 	return c.Database("lxd").Collection(collection).FindOne(context.Background(), filter)
+}
+
+func FindAll(collection string) ([]primitive.M, error) {
+	c := connect()
+	defer c.Disconnect(context.Background())
+
+	cur, err := c.Database("lxd").Collection(collection).Find(context.Background(), bson.D{})
+
+	if err != nil {
+		log.Println(err)
+		return nil, err
+	}
+
+	var results []primitive.M
+	for cur.Next(context.Background()) {
+		var result bson.M
+		err := cur.Decode(&result)
+		if err != nil {
+			log.Println(err)
+			return nil, err
+		}
+		results = append(results, result)
+	}
+
+	return results, nil
+
 }
 
 func ReplaceOne(collection string, filter interface{}, replacement interface{}) (*mongo.UpdateResult, error) {
