@@ -8,6 +8,7 @@ import (
 	"time"
 
 	lxd "github.com/canonical/lxd/client"
+	"github.com/canonical/lxd/shared/api"
 )
 
 var conf, _ = config.LoadConfig()
@@ -18,13 +19,25 @@ type HostNode struct {
 	Containers  interface{} `bson:"containers"`
 }
 
+type Network struct {
+	IPs     string `bson:"ips"`
+	Netmask string `bson:"netmask"`
+	CIDR    string `bson:"cidr"`
+}
+
+type OS struct {
+	Distribution string `bson:"distribution"`
+	Version      string `bson:"version"`
+}
+
 type Container struct {
-	CollectedAt time.Time   `bson:"collectedat"`
-	Name        string      `bson:"name"`
-	Container   interface{} `bson:"container"`
-	Backups     interface{} `bson:"backups"`
-	State       interface{} `bson:"state"`
-	Snapshots   interface{} `bson:"snapshots"`
+	CollectedAt time.Time `bson:"collectedat"`
+	Name        string    `bson:"name"`
+	Hostnode    string    `bson:"hostnode"`
+	Status      string    `bson:"status"`
+	Networking  Network   `bson:"networking"`
+	OS          OS        `bson:"os"`
+	ImageID     string    `bson:"imageid"`
 }
 
 func connectionOptions() *lxd.ConnectionArgs {
@@ -59,6 +72,43 @@ func getHostnodes() []string {
 	return c.HostNodes
 }
 
+func ParseContainer(c api.ContainerFull, h string) Container {
+
+	if c.State.Status == "Stopped" {
+		return Container{
+			Name:     c.Name,
+			Hostnode: h,
+			Status:   c.State.Status,
+			Networking: Network{
+				IPs:     "N/A",
+				Netmask: "N/A",
+				CIDR:    "N/A",
+			},
+			OS: OS{
+				Distribution: c.Config["image.os"],
+				Version:      c.Config["image.release"],
+			},
+			ImageID: c.Config["volatile.base_image"][:6],
+		}
+	}
+
+	return Container{
+		Name:     c.Name,
+		Hostnode: h,
+		Status:   c.State.Status,
+		Networking: Network{
+			IPs:     c.State.Network["eth0"].Addresses[0].Address,
+			Netmask: c.State.Network["eth0"].Addresses[0].Netmask,
+			CIDR:    c.State.Network["eth0"].Addresses[0].Address + "/" + c.State.Network["eth0"].Addresses[0].Netmask,
+		},
+		OS: OS{
+			Distribution: c.Config["image.os"],
+			Version:      c.Config["image.release"],
+		},
+		ImageID: c.Config["volatile.base_image"][:6],
+	}
+}
+
 func Run() {
 
 	collectedAt := time.Now().UTC()
@@ -70,12 +120,9 @@ func Run() {
 		}
 		cs, _ := c.GetContainersFull()
 
-		// for _, c := range cs {
-		// 	database.InsertOne("containers", c)
-		// }
-		// log.Println("Inserted", len(cs), "containers from", h)
 		for _, c := range cs {
-			database.InsertMany("containers", []interface{}{Container{CollectedAt: collectedAt, Name: c.Name, Container: c.Container, Backups: c.Backups, State: c.State, Snapshots: c.Snapshots}})
+			container := ParseContainer(c, h)
+			database.InsertMany("containers", []interface{}{container})
 		}
 		log.Println("Inserted", len(cs), "containers from", h)
 
