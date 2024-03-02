@@ -52,7 +52,7 @@ func LoadConfig() (*Config, error) {
 
 	var config *Config
 	log.Println("Using config file:", viper.ConfigFileUsed())
-	log.Println("Using settings:", viper.AllSettings())
+	// log.Println("Using settings:", viper.AllSettings())
 	err := viper.Unmarshal(&config)
 	return config, err
 

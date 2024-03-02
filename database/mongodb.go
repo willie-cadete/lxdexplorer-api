@@ -40,7 +40,7 @@ func InsertOne(collection string, document interface{}) {
 	if err != nil {
 		panic(err)
 	}
-	log.Printf("Inserted document with ID %v\n", i.InsertedID)
+	log.Printf("Database: Inserted document with ID %v\n", i.InsertedID)
 
 }
 
@@ -52,7 +52,7 @@ func InsertMany(collection string, documents []interface{}) {
 	if err != nil {
 		panic(err)
 	}
-	log.Printf("Inserted %v documents with IDs %v\n", len(i.InsertedIDs), i.InsertedIDs)
+	log.Printf("Database: Inserted %v documents with IDs %v\n", len(i.InsertedIDs), i.InsertedIDs)
 
 }
 

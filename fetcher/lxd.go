@@ -111,9 +111,9 @@ func ParseContainer(c api.ContainerFull, h string) Container {
 
 func AddLXDTTLs() {
 	database.AddTTL("containers", "collectedat", int32(conf.Interval))
-	log.Printf("Added TTL to containers collection: %d seconds", conf.Interval)
+	log.Printf("Fetcher: Added TTL to containers collection: %d seconds", conf.Interval)
 
-	log.Printf("Added TTL to history collection: %d days", conf.Retention)
+	log.Printf("Fetcher: Added TTL to history collection: %d days", conf.Retention)
 	database.AddTTL("history", "collectedat", int32(conf.Retention*60*60*24))
 }
 
@@ -132,10 +132,10 @@ func collect() {
 			container := ParseContainer(c, h)
 			database.InsertMany("containers", []interface{}{Container{CollectedAt: collectedAt, Name: container.Name, Hostnode: container.Hostnode, Status: container.Status, Network: container.Network, OS: container.OS, ImageID: container.ImageID}})
 		}
-		log.Println("Inserted", len(cs), "containers from", h)
+		log.Println("Fetcher: Inserted", len(cs), "containers from", h)
 
 		database.InsertMany("history", []interface{}{HostNode{CollectedAt: collectedAt, Hostname: h, Containers: cs}})
-		log.Println("Inserted", len(cs), "containers from hostnode:", h)
+		log.Println("Fetcher: Inserted", len(cs), "containers from hostnode:", h)
 
 	}
 
