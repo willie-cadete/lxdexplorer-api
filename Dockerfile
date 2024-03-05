@@ -24,6 +24,7 @@ WORKDIR /app/
 
 # Copy the built Go application from the previous stage
 COPY --from=builder /app/lxdexplorer-api .
+COPY config.yaml.example /app/config.yaml
 
 ENV GIN_MODE=release
 
