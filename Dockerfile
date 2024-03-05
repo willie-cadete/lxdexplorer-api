@@ -1,6 +1,8 @@
 # Stage 1: Build the Go application
 FROM golang:1.22 AS builder
 
+ARG VERSION=dev
+
 WORKDIR /app
 
 # Copy the Go module files
@@ -13,10 +15,10 @@ RUN go mod download
 COPY . .
 
 # Build the Go application
-RUN go build
+RUN go build -ldflags=-X=main.version=${VERSION}
 
 # Stage 2: Create a minimal runtime image
-FROM golang:latest
+FROM debian:buster-slim
 
 # RUN apk --no-cache add ca-certificates
 
