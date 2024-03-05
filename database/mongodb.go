@@ -2,6 +2,7 @@ package database
 
 import (
 	"context"
+	"fmt"
 	"lxdexplorer-api/config"
 
 	"log"
@@ -101,12 +102,30 @@ func AddTTL(collection string, field string, seconds int32) {
 	defer c.Disconnect(context.Background())
 
 	indexModel := mongo.IndexModel{
-		Keys:    bson.D{{field, 1}},
+		Keys:    bson.D{{Key: field, Value: 1}},
 		Options: options.Index().SetExpireAfterSeconds(seconds),
 	}
 
-	_, err := c.Database("lxd").Collection(collection).Indexes().CreateOne(context.Background(), indexModel)
+	indexView := c.Database("lxd").Collection(collection).Indexes()
+
+	// Create a new index
+	var err error
+	_, err = indexView.CreateOne(context.Background(), indexModel)
 	if err != nil {
-		panic(err)
+		// Drop the existing index
+		log.Println(err)
+		_, err := indexView.DropOne(context.Background(), string(field+"_1"))
+		if err != nil {
+			// Handle error
+			fmt.Println(err)
+		}
+		// log.Printf("Database: Dropped existing TTL index on %s\n", field)
+		// Create a new index
+		_, err = indexView.CreateOne(context.Background(), indexModel)
+		if err != nil {
+			// Handle error
+			log.Println(err)
+		}
 	}
+
 }
