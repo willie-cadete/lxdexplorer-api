@@ -20,5 +20,6 @@
 # Project files
 keys
 config.yaml
+!config/config.yaml
 dist/*
 !dist/.gitkeep

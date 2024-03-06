@@ -1,0 +1,13 @@
+Interval: 60
+LogLevel: info
+LXD:
+  TLSCertificate: client.crt
+  TLSkey: client.key
+  CertificateVerify: false
+Server:
+  Bind: 127.0.0.1
+  Port: 80
+MongoDB:
+  URI: mongodb://localhost:27017
+HostNodes:
+  - 127.0.0.1
