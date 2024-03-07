@@ -20,7 +20,7 @@ RUN go build -ldflags=-X=main.version=${VERSION}
 # Stage 2: Create a minimal runtime image
 FROM debian:bookworm-slim
 
-# RUN apk --no-cache add ca-certificates
+RUN apt-get update && apt-get install -y ca-certificates
 
 WORKDIR /app/
 
