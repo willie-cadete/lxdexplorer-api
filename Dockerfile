@@ -18,7 +18,7 @@ COPY . .
 RUN go build -ldflags=-X=main.version=${VERSION}
 
 # Stage 2: Create a minimal runtime image
-FROM debian:buster-slim
+FROM debian:bookworm-slim
 
 # RUN apk --no-cache add ca-certificates
 
