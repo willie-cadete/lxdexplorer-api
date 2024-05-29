@@ -75,6 +75,7 @@ jobs:
           TAG=$(echo ${{ github.ref }} | sed 's/refs\/tags\/v//')
           echo "image: williecadete/lxdexplorer-api:$TAG"
           sed -i "s|image: williecadete/lxdexplorer-api:.*|image: williecadete/lxdexplorer-api:$TAG|" infra/kubernetes/manifests/lxdexplorer-api/deployment.yml
+          cd infra
           git add .
           git commit -m "Update lxdexplorer-api image to $TAG"
           git push
