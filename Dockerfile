@@ -15,7 +15,7 @@ RUN go mod download
 COPY . .
 
 # Build the Go application
-RUN go build -ldflags=-X=main.version=${VERSION}
+RUN CGO_ENABLED=0 GOOS=linux go build -ldflags "-X main.version=$VERSION"
 
 # Stage 2: Create a minimal runtime image
 FROM debian:bookworm-slim
