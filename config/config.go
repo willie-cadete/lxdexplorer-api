@@ -8,24 +8,14 @@ import (
 )
 
 type Config struct {
-	Interval  int
-	Retention int32
-	LogLevel  string
-	LXD       LXD
-	HostNodes []string
-	Server    API
-	MongoDB   MongoDB
+	LogLevel string
+	Server   API
+	MongoDB  MongoDB
 }
 
 type API struct {
 	Bind string
 	Port string
-}
-
-type LXD struct {
-	TLSCertificate    string
-	TLSKey            string
-	CertificateVerify bool
 }
 
 type MongoDB struct {

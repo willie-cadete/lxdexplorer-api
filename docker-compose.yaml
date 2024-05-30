@@ -6,4 +6,3 @@ services:
       - 8080:8080
     volumes:
       - ./config.yaml:/app/config.yaml
-      - ./keys:/app/keys

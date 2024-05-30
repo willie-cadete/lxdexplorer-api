@@ -1,14 +1,6 @@
-Interval: 3600 # seconds
-Retention: 30 # days
 LogLevel: info
-LXD:
-  TLSCertificate: ./keys/client.crt
-  TLSkey: ./keys/client.key
-  CertificateVerify: false
 Server:
   Bind: 0.0.0.0
   Port: 80
 MongoDB:
   URI: mongodb://localhost:27017
-HostNodes:
-  - 127.0.0.1
