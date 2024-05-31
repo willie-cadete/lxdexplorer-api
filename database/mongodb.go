@@ -2,7 +2,6 @@ package database
 
 import (
 	"context"
-	"fmt"
 	"lxdexplorer-api/config"
 	"time"
 
@@ -131,7 +130,7 @@ func AddTTL(collection string, field string, seconds int32) {
 		_, err := indexView.DropOne(context.Background(), string(field+"_1"))
 		if err != nil {
 			// Handle error
-			fmt.Println(err)
+			log.Println(err)
 		}
 		// log.Printf("Database: Dropped existing TTL index on %s\n", field)
 		// Create a new index
