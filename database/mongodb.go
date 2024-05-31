@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"lxdexplorer-api/config"
+	"time"
 
 	"log"
 
@@ -15,26 +16,28 @@ import (
 
 var conf, _ = config.LoadConfig()
 
-func connect() *mongo.Client {
-	client, err := mongo.Connect(context.TODO(), options.Client().ApplyURI(conf.MongoDB.URI))
+func connect() (*mongo.Client, error) {
+	client, err := mongo.Connect(context.TODO(), options.Client().ApplyURI(conf.MongoDB.URI).SetTimeout(time.Second*5)) // Somehow is 10 second timeout
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 
 	ping(client)
 
-	return client
+	return client, err
 }
 
-func ping(c *mongo.Client) {
+func ping(c *mongo.Client) error {
 	err := c.Ping(context.Background(), nil)
 	if err != nil {
-		panic(err)
+		return err
 	}
+
+	return nil
 }
 
 func InsertOne(collection string, document interface{}) {
-	c := connect()
+	c, _ := connect()
 	defer c.Disconnect(context.Background())
 
 	i, err := c.Database("lxd").Collection(collection).InsertOne(context.TODO(), document)
@@ -46,7 +49,7 @@ func InsertOne(collection string, document interface{}) {
 }
 
 func InsertMany(collection string, documents []interface{}) {
-	c := connect()
+	c, _ := connect()
 	defer c.Disconnect(context.Background())
 
 	i, err := c.Database("lxd").Collection(collection).InsertMany(context.TODO(), documents)
@@ -58,14 +61,19 @@ func InsertMany(collection string, documents []interface{}) {
 }
 
 func FindOne(collection string, filter interface{}) *mongo.SingleResult {
-	c := connect()
+	c, _ := connect()
 	defer c.Disconnect(context.Background())
 
 	return c.Database("lxd").Collection(collection).FindOne(context.Background(), filter)
 }
 
 func FindAll(collection string) ([]primitive.M, error) {
-	c := connect()
+	c, err := connect()
+	if err != nil {
+		log.Println(err)
+		return nil, err
+	}
+
 	defer c.Disconnect(context.Background())
 
 	cur, err := c.Database("lxd").Collection(collection).Find(context.Background(), bson.D{})
@@ -91,14 +99,14 @@ func FindAll(collection string) ([]primitive.M, error) {
 }
 
 func ReplaceOne(collection string, filter interface{}, replacement interface{}) (*mongo.UpdateResult, error) {
-	c := connect()
+	c, _ := connect()
 	defer c.Disconnect(context.Background())
 
 	return c.Database("lxd").Collection(collection).ReplaceOne(context.Background(), filter, replacement)
 }
 
 func AddTTL(collection string, field string, seconds int32) {
-	c := connect()
+	c, _ := connect()
 	defer c.Disconnect(context.Background())
 
 	indexModel := mongo.IndexModel{
