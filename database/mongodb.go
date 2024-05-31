@@ -22,16 +22,22 @@ func connect() (*mongo.Client, error) {
 		return nil, err
 	}
 
-	ping(client)
+	// Check the connection
+	err = client.Ping(context.Background(), nil)
+	if err != nil {
+		return nil, err
+	}
 
 	return client, err
 }
 
-func ping(c *mongo.Client) error {
-	err := c.Ping(context.Background(), nil)
+func Ping() error {
+	c, err := connect()
 	if err != nil {
 		return err
 	}
+
+	defer c.Disconnect(context.Background())
 
 	return nil
 }

@@ -1,6 +1,8 @@
 package api
 
 import (
+	"log"
+
 	"github.com/gin-gonic/gin"
 
 	"lxdexplorer-api/config"
@@ -18,16 +20,30 @@ func StartAPI() {
 	conf, _ := config.LoadConfig()
 
 	// Add the routes
-	r.GET("/api/v1/ping", ping)
+	r.GET("/api/v1/_healthz", health)
 	r.GET("/api/v1/containers", getContainers)
 
 	// Run the API server
 	r.Run(conf.Server.Bind + ":" + conf.Server.Port)
 }
 
-func ping(c *gin.Context) {
+func health(c *gin.Context) {
+
+	err := database.Ping()
+
+	if err != nil {
+		log.Printf("Error pinging database: %v\n", err)
+
+		c.JSON(500, gin.H{
+			"health":   "DOWN",
+			"database": "DOWN",
+		})
+		return
+	}
+
 	c.JSON(200, gin.H{
-		"message": "pong",
+		"health":   "UP",
+		"database": "UP",
 	})
 }
 
