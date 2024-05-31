@@ -44,7 +44,11 @@ func getContainers(c *gin.Context) {
 		return
 	}
 
-	c.JSON(200, gin.H{
-		"message": containers,
-	})
+	// Remove the object_id from the containers list
+	for i := range containers {
+		delete(containers[i], "_id")
+	}
+
+	// Respond with the modified containers list as JSON
+	c.JSON(200, containers)
 }
