@@ -37,7 +37,9 @@ func getContainers(c *gin.Context) {
 
 	if err != nil {
 		c.JSON(500, gin.H{
-			"message": "Error fetching containers",
+			"type":    "error",
+			"status":  "500",
+			"message": "Error fetching containers from database. Please try again later.",
 		})
 		return
 	}
