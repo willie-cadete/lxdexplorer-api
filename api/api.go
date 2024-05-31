@@ -44,6 +44,11 @@ func getContainers(c *gin.Context) {
 		return
 	}
 
+	if len(containers) == 0 {
+		c.JSON(200, []gin.H{})
+		return
+	}
+
 	// Remove the object_id from the containers list
 	for i := range containers {
 		delete(containers[i], "_id")
