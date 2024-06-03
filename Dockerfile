@@ -18,9 +18,13 @@ COPY . .
 RUN CGO_ENABLED=0 GOOS=linux go build -ldflags "-X main.version=$VERSION"
 
 # Stage 2: Create a minimal runtime image
-FROM debian:bookworm-slim
+FROM alpine:3.20
 
-RUN apt-get update && apt-get install -y ca-certificates
+RUN addgroup -S nonroot \
+    && adduser -S nonroot -G nonroot
+
+# Create a non-root user
+USER nonroot
 
 WORKDIR /app/
 

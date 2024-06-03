@@ -1,0 +1,126 @@
+[{
+  "_id": {
+    "$oid": "665d9b5c7d7305f82eefdca7"
+  },
+  "collectedat": {
+    "$date": "2024-06-03T10:30:51.837Z"
+  },
+  "name": "containerx",
+  "hostnode": "lxd01.example.com",
+  "status": "Running",
+  "network": {
+    "ips": "10.112.88.44",
+    "netmask": "24",
+    "cidr": "10.112.88.44/24"
+  },
+  "os": {
+    "distribution": "Ubuntu",
+    "version": "Noble"
+  },
+  "imageid": "dd50a9"
+},
+{
+  "_id": {
+    "$oid": "665d9b5c7d7305f82eefdca9"
+  },
+  "collectedat": {
+    "$date": "2024-06-03T10:30:51.837Z"
+  },
+  "name": "poetic-reindeer",
+  "hostnode": "lxd01.example.com",
+  "status": "Running",
+  "network": {
+    "ips": "10.112.88.174",
+    "netmask": "24",
+    "cidr": "10.112.88.174/24"
+  },
+  "os": {
+    "distribution": "Ubuntu",
+    "version": "Jammy"
+  },
+  "imageid": "be25b3"
+},
+{
+  "_id": {
+    "$oid": "665d9b5d7d7305f82eefdcab"
+  },
+  "collectedat": {
+    "$date": "2024-06-03T10:30:51.837Z"
+  },
+  "name": "teaching-cub",
+  "hostnode": "lxd01.example.com",
+  "status": "Stopped",
+  "network": {
+    "ips": "N/A",
+    "netmask": "N/A",
+    "cidr": "N/A"
+  },
+  "os": {
+    "distribution": "Ubuntu",
+    "version": "Jammy"
+  },
+  "imageid": "be25b3"
+},
+{
+  "_id": {
+    "$oid": "665d9b647d7305f82eefdcaf"
+  },
+  "collectedat": {
+    "$date": "2024-06-03T10:30:51.837Z"
+  },
+  "name": "containerx",
+  "hostnode": "lxd03.example.com",
+  "status": "Running",
+  "network": {
+    "ips": "10.112.88.44",
+    "netmask": "24",
+    "cidr": "10.112.88.44/24"
+  },
+  "os": {
+    "distribution": "Ubuntu",
+    "version": "Noble"
+  },
+  "imageid": "dd50a9"
+},
+{
+  "_id": {
+    "$oid": "665d9b647d7305f82eefdcb1"
+  },
+  "collectedat": {
+    "$date": "2024-06-03T10:30:51.837Z"
+  },
+  "name": "poetic-reindeer",
+  "hostnode": "lxd03.example.com",
+  "status": "Running",
+  "network": {
+    "ips": "10.112.88.174",
+    "netmask": "24",
+    "cidr": "10.112.88.174/24"
+  },
+  "os": {
+    "distribution": "Ubuntu",
+    "version": "Jammy"
+  },
+  "imageid": "be25b3"
+},
+{
+  "_id": {
+    "$oid": "665d9b657d7305f82eefdcb3"
+  },
+  "collectedat": {
+    "$date": "2024-06-03T10:30:51.837Z"
+  },
+  "name": "teaching-cub",
+  "hostnode": "lxd03.example.com",
+  "status": "Stopped",
+  "network": {
+    "ips": "N/A",
+    "netmask": "N/A",
+    "cidr": "N/A"
+  },
+  "os": {
+    "distribution": "Ubuntu",
+    "version": "Jammy"
+  },
+  "imageid": "be25b3"
+}]
