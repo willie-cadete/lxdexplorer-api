@@ -1,0 +1,9 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: lxdexplorer-web
+  description: API for all Linux Containers in the environment
+spec:
+  type: service
+  lifecycle: production
+  owner: willie-cadete
